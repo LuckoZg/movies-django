@@ -1,0 +1,82 @@
+{% extends 'movies/base.html' %}
+
+{% block body %}
+<div class="container">
+
+<div class="col-md-9">
+
+    <div class="row">
+        <div class="col-md-5">
+            <a href="">
+                <img src="{{movie.picture}}" class="img-rounded" width="300" height="500">
+            </a>
+        </div>
+        <div class="col-md-7">
+            <h2>{{movie.name}} ({% if movie.score != -1 %}{{movie.score}}%{% else %}no score yet{% endif %})</h2>
+            {% if movie.production_company.name != "no_production_company" %}<h3>{{movie.production_company}}</h3>{% endif %}
+
+            <h4>Description:</h4>
+            <p>{{movie.description}}</p>
+
+            <h4>Genre:</h4>
+            <p>
+            {% for genre in movie.genre.all %}
+                {{genre.name}}{% if forloop.last == False %},{% else %}.{% endif %} 
+            {% endfor %}
+
+            {% if movie.genre.all|length == 0 %}
+                <i>No genre.</i>
+            {% endif %}
+            </p>
+
+            <h4>Director:</h4>
+            <p>
+            {% for director in movie.director.all %}
+                {{director.name}}{% if forloop.last == False %},{% else %}.{% endif %} 
+            {% endfor %}
+            {% if movie.director.all|length == 0 %}
+                <i>No director.</i>
+            {% endif %}
+            </p>
+
+            <h4>Author:</h4>
+            <p>
+            {% for author in movie.author.all %}
+                {{author.name}}{% if forloop.last == False %},{% else %}.{% endif %} 
+            {% endfor %}
+            {% if movie.author.all|length == 0 %}
+                <i>No author.</i>
+            {% endif %}
+            </p>
+
+            <h4>Cast:</h4>
+            <p>
+            {% for actor in movie.actor.all %}
+                {{actor.name}}{% if forloop.last == False %},{% else %}.{% endif %} 
+            {% endfor %}
+            {% if movie.actor.all|length == 0 %}
+                <i>No cast.</i>
+            {% endif %}
+            </p>
+        
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10">
+
+            <h3>Critics:</h3>
+            {% for critic in movie.critic.all %}
+                <h4><a href="{{critic.url}}" target="_blank">{{critic.publisher}}</a> - {{critic.author}}</h4>
+                <p>{{critic.text}}</p><hr>
+            {% endfor %}
+            {% if movie.critic.all|length == 0 %}
+                <p><i>No critics.</i></p>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+{% endblock %}
