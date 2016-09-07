@@ -42,7 +42,6 @@ class Command(BaseCommand):
         movie["description"] = jsonLdSchema["description"]
         default_pc = "no_production_company"
         movie["production_company"] = jsonLdSchema["productionCompany"].get('name', default_pc)
-
         movie["genre"] = jsonLdSchema["genre"]
         movie["director"] = jsonLdSchema["director"]
         movie["author"] = jsonLdSchema["author"]
@@ -62,16 +61,8 @@ class Command(BaseCommand):
         # Empty database
         m = Movie.objects.all()
         m.delete()
-        c = Critic.objects.all()
-        c.delete()
 
         # Persons, genres and organizations can be related to many movies, so we are not going to delete them
-        # p = Person.objects.all()
-        # p.delete()
-        # g = Genre.objects.all()
-        # g.delete()
-        # o = Organization.objects.all()
-        # o.delete()
 
         self.stdout.write(self.style.SUCCESS("2. Empty Database"))
 
@@ -91,34 +82,31 @@ class Command(BaseCommand):
         # Save each movie = [] item to database
         i = 1
         for movie in self.movies:
-            # Save production company to database
+
+            # Save production company
             new_production_company = self.get_reference(Organization, movie["production_company"])
-            # Save movie to database
+
+            # Save movie
             new_movie = Movie(name=movie["name"], position=movie["position"], picture=movie["picture"], score=movie["score"], description=movie["description"], production_company=new_production_company)
             new_movie.save()   
-            self.stdout.write(self.style.SUCCESS('3.'+str(i)+'. Movie saved to database'))
 
-            # Save movie genre
+            # Save other fields
             for genre_name in movie["genre"]:
                 new_genre = self.get_reference(Genre, genre_name)
                 new_movie.genre.add(new_genre)
 
-            # Save movie director
             for director in movie["director"]:
                 new_director = self.get_reference(Person, director["name"])
                 new_movie.director.add(new_director)
 
-            # Save movie author
             for author in movie["author"]:
                 new_author = self.get_reference(Person, author["name"])
                 new_movie.author.add(new_author)
 
-            # Save movie actor
             for actor in movie["actor"]:
                 new_actor = self.get_reference(Person, actor["name"])
                 new_movie.actor.add(new_actor)
 
-            # Save movie critics
             y = 1
             for critic in movie["critic"]:
                 if y > self.max_critics_per_movie:
@@ -127,12 +115,11 @@ class Command(BaseCommand):
                 url = critic["url"]
                 author = self.get_reference(Person, critic["author"]["name"])
                 publisher = self.get_reference(Organization, critic["publisher"]["name"])
-                new_critic = Critic(text=text, url=url, author=author, publisher=publisher)
+                new_critic = Critic(text=text, url=url, author=author, publisher=publisher, movie=new_movie)
                 new_critic.save()
-                new_movie.critic.add(new_critic)
                 y += 1
 
-
+            self.stdout.write(self.style.SUCCESS('3.'+str(i)+'. Movie saved to database'))
             i += 1
 
     def handle(self, *args, **options):

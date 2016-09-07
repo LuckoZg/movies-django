@@ -19,15 +19,6 @@ class Person(models.Model):
 	def __str__(self):
 		return self.name
 
-class Critic(models.Model):
-	text = models.TextField()
-	url = models.CharField(max_length=250)
-	author = models.ForeignKey(Person, on_delete=models.CASCADE)
-	publisher = models.ForeignKey(Organization, on_delete=models.CASCADE)
-
-	def __str__(self):
-		return self.publisher.name + ' - ' + self.author.name
-
 class Movie(models.Model):
 	position = models.IntegerField()
 	name = models.CharField(max_length=250)
@@ -39,7 +30,16 @@ class Movie(models.Model):
 	director = models.ManyToManyField(Person, related_name="director")
 	author = models.ManyToManyField(Person, related_name="author")
 	actor = models.ManyToManyField(Person, related_name="actor")
-	critic = models.ManyToManyField(Critic)
 
 	def __str__(self):
 		return self.name
+
+class Critic(models.Model):
+	text = models.TextField()
+	url = models.CharField(max_length=250)
+	author = models.ForeignKey(Person, on_delete=models.CASCADE)
+	publisher = models.ForeignKey(Organization, on_delete=models.CASCADE)
+	movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+
+	def __str__(self):
+		return self.publisher.name + ' - ' + self.author.name

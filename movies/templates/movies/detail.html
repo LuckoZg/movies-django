@@ -65,11 +65,11 @@
         <div class="col-md-10">
 
             <h3>Critics:</h3>
-            {% for critic in movie.critic.all %}
+            {% for critic in critics.all %}
                 <h4><a href="{{critic.url}}" target="_blank">{{critic.publisher}}</a> - {{critic.author}}</h4>
                 <p>{{critic.text}}</p><hr>
             {% endfor %}
-            {% if movie.critic.all|length == 0 %}
+            {% if critics.all|length == 0 %}
                 <p><i>No critics.</i></p>
             {% endif %}
 
