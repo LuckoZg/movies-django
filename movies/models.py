@@ -23,10 +23,10 @@ class Movie(models.Model):
 	position = models.IntegerField()
 	name = models.CharField(max_length=250)
 	picture = models.CharField(max_length=500)
-	score = models.IntegerField()
+	score = models.IntegerField(null=True)
 	description = models.TextField()
-	production_company = models.ForeignKey(Organization, on_delete=models.CASCADE)
-	genre = models.ManyToManyField(Genre)
+	production_company = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
+	genre = models.ManyToManyField(Genre, related_name="genre")
 	director = models.ManyToManyField(Person, related_name="director")
 	author = models.ManyToManyField(Person, related_name="author")
 	actor = models.ManyToManyField(Person, related_name="actor")
@@ -39,7 +39,7 @@ class Critic(models.Model):
 	url = models.CharField(max_length=250)
 	author = models.ForeignKey(Person, on_delete=models.CASCADE)
 	publisher = models.ForeignKey(Organization, on_delete=models.CASCADE)
-	movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+	movie = models.ForeignKey(Movie, related_name="critics")
 
 	def __str__(self):
 		return self.publisher.name + ' - ' + self.author.name

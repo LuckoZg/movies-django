@@ -35,18 +35,16 @@ class Command(BaseCommand):
 
         # Create movie from jsonLdSchema and return
         movie = {}
-        movie["name"] = jsonLdSchema["name"]
-        movie["picture"] = jsonLdSchema["image"]["url"]
-        default_score = -1
-        movie["score"] = jsonLdSchema["aggregateRating"].get('ratingValue', default_score)
-        movie["description"] = jsonLdSchema["description"]
-        default_pc = "no_production_company"
-        movie["production_company"] = jsonLdSchema["productionCompany"].get('name', default_pc)
-        movie["genre"] = jsonLdSchema["genre"]
-        movie["director"] = jsonLdSchema["director"]
-        movie["author"] = jsonLdSchema["author"]
-        movie["actor"] = jsonLdSchema["actor"]
-        movie["critic"] = jsonLdSchema["review"]
+        movie["name"] = jsonLdSchema.get('name', "")
+        movie["picture"] = jsonLdSchema.get("image", "")
+        movie["score"] = jsonLdSchema["aggregateRating"].get('ratingValue', None)
+        movie["description"] = jsonLdSchema.get('description', "")
+        movie["production_company"] = jsonLdSchema["productionCompany"].get('name', None)
+        movie["genre"] = jsonLdSchema.get('genre', "")
+        movie["director"] = jsonLdSchema.get('director', "")
+        movie["author"] = jsonLdSchema.get('author', "")
+        movie["actor"] = jsonLdSchema.get('actor', "")
+        movie["critic"] = jsonLdSchema.get('review', "")
     
         return movie
 
@@ -55,7 +53,13 @@ class Command(BaseCommand):
         r = requests.get(url)
         soup = BeautifulSoup(r.text, "html.parser")
         jsonLdSchema = soup.find('script', {'id': 'jsonLdSchema'}).get_text()
-        return json.loads(jsonLdSchema)
+        jsonLdSchema = json.loads(jsonLdSchema)
+
+        if(url != self.base_url+self.opening_url):
+            jsonLdSchema["image"] = soup.select_one('.posterImage')['src']
+            jsonLdSchema["description"] = soup.select_one('#movieSynopsis').text
+
+        return jsonLdSchema
 
     def empty_db(self):
         # Empty database
@@ -67,6 +71,9 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("2. Empty Database"))
 
     def get_reference(self, Object, name):
+        if name == None:
+            return None;
+
         objects = Object.objects.filter(name=name)
         # If Object exist
         if len(objects):
@@ -96,15 +103,15 @@ class Command(BaseCommand):
                 new_movie.genre.add(new_genre)
 
             for director in movie["director"]:
-                new_director = self.get_reference(Person, director["name"])
+                new_director = self.get_reference(Person, director["person"]["name"])
                 new_movie.director.add(new_director)
 
             for author in movie["author"]:
-                new_author = self.get_reference(Person, author["name"])
+                new_author = self.get_reference(Person, author["person"]["name"])
                 new_movie.author.add(new_author)
 
             for actor in movie["actor"]:
-                new_actor = self.get_reference(Person, actor["name"])
+                new_actor = self.get_reference(Person, actor["person"]["name"])
                 new_movie.actor.add(new_actor)
 
             y = 1

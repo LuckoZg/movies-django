@@ -12,8 +12,8 @@
             </a>
         </div>
         <div class="col-md-7">
-            <h2>{{movie.name}} ({% if movie.score != -1 %}{{movie.score}}%{% else %}no score yet{% endif %})</h2>
-            {% if movie.production_company.name != "no_production_company" %}<h3>{{movie.production_company}}</h3>{% endif %}
+            <h2>{{movie.name}} ({% if movie.score %}{{movie.score}}%{% else %}no score yet{% endif %})</h2>
+            {% if movie.production_company.name %}<h3>{{movie.production_company}}</h3>{% endif %}
 
             <h4>Description:</h4>
             <p>{{movie.description}}</p>

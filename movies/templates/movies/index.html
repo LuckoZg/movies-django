@@ -13,8 +13,8 @@
             </a>
         </div>
         <div class="col-md-9">
-            <h3>{{forloop.counter}}. {{movie.name}} ({% if movie.score != -1 %}{{movie.score}}%{% else %}no score yet{% endif %})</h3>
-            {% if movie.production_company.name != "no_production_company" %}<h4>{{movie.production_company}}</h4>{% endif %}
+            <h3>{{forloop.counter}}. {{movie.name}} ({% if movie.score %}{{movie.score}}%{% else %}no score yet{% endif %})</h3>
+            {% if movie.production_company.name %}<h4>{{movie.production_company}}</h4>{% endif %}
             <p>{{movie.description}}</p>
             <a class="btn btn-primary" href="{% url 'movies:detail' movie.id %}">More <span class="glyphicon glyphicon-chevron-right"></span></a>
         </div>

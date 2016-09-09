@@ -16,7 +16,7 @@
 		                <img src="{{movie.picture}}" class="img-rounded" width="130" height="200">
 		            </a>
 		            <h4>
-		                <a href="{% url 'movies:detail' movie.id %}">{{movie.name}} ({% if movie.score != -1 %}{{movie.score}}%{% else %}no score yet{% endif %})</a>
+		                <a href="{% url 'movies:detail' movie.id %}">{{movie.name}} ({% if movie.score %}{{movie.score}}%{% else %}no score yet{% endif %})</a>
 		            </h4>
 		            <br>
 		        </div>
