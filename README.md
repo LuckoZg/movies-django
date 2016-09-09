@@ -16,4 +16,4 @@ Movie website in django
 <p>9.9. - Rottentomatoes changed jsonLdSchema. Needed to update code.</p>
 
 <h2>Next</h2>
-<a href="https://github.com/finga10/django-movies-rest/">Movies django with REST API integrated + Angularjs on frontend</a>
+<a href="https://github.com/finga10/movies-django-rest/">Movies django with REST API integrated + Angularjs on frontend</a>
